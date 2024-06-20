@@ -1,0 +1,24 @@
+id: Arbitrary Text Injection
+
+info:
+  name: Arbitrary Text Injection
+  author: Nikhil Kumar
+  severity: Low
+  tags:  injection
+
+  
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/!!!ATENTION!!!_This_site_is_on_Maintenance_please_go_to_WWW.EVIL.COM"
+      - "{{BaseURL}}!!!ATENTION!%20This%20server%20is%20on%20Maintenance%20please%20go%20to%20WWW.EVIL.COM%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20"
+
+    matchers:
+      - type: word
+        words:
+          - "!!!ATENTION!!!_This_site_is_on_Maintenance_please_go_to_WWW.EVIL.COM"
+          - "EVIL.COM"
+        part: body
+
+#Hackerone Report
+#https://hackerone.com/reports/327671
